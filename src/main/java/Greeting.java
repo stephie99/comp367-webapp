@@ -5,9 +5,9 @@ public class Greeting {
         LocalTime now = LocalTime.now();
         String greeting;
         if (now.isBefore(LocalTime.NOON)) {
-            greeting = "Good morning, Stephie! Welcome to COMP367.";
+            greeting = "Good morning, Stephanie! Welcome to COMP367.";
         } else {
-            greeting = "Good afternoon, Stephie! Welcome to COMP367.";
+            greeting = "Good afternoon, Stephanie! Welcome to COMP367.";
         }
         System.out.println(greeting);
     }
