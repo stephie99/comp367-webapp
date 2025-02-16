@@ -1,7 +1,7 @@
 pipeline {
     agent any
     tools {
-        maven 'Maven 3.x'  // Use the configured Maven installation
+        maven 'apache-maven-3.9.9'  // Use the configured Maven installation
     }
     stages {
         stage('Checkout') {
