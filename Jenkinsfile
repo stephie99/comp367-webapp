@@ -1,28 +1,42 @@
 pipeline {
     agent any
     tools {
-        maven 'apache-maven-3.9.9'  // Use the configured Maven installation
+        maven "MAVEN3" // Name of Maven installation in Jenkins
+    }
+    environment {
+        DOCKERHUB_USERNAME = credentials('dockerhub-username') // Jenkins credentials ID
+        DOCKERHUB_PASSWORD = credentials('dockerhub-password') // Jenkins credentials ID
     }
     stages {
-        stage('Checkout') {
+        stage('Checkout Code') {
             steps {
                 checkout scm
             }
         }
-        stage('Build') {
+        stage('Build Maven Project') {
             steps {
-                bat 'mvn clean package'
+                sh 'mvn clean package'
             }
         }
-        stage('Test') {
+        stage('Docker Login') {
             steps {
-                bat 'mvn test'
+                sh 'echo $DOCKERHUB_PASSWORD | docker login -u $DOCKERHUB_USERNAME --password-stdin'
             }
         }
-        stage('Deploy') {
+        stage('Docker Build') {
             steps {
-                echo 'Deployment step'
+                sh 'docker build -t $DOCKERHUB_USERNAME/maven-webapp:latest .'
             }
+        }
+        stage('Docker Push') {
+            steps {
+                sh 'docker push $DOCKERHUB_USERNAME/maven-webapp:latest'
+            }
+        }
+    }
+    post {
+        always {
+            echo 'Pipeline execution completed.'
         }
     }
 }
