@@ -4,8 +4,8 @@ pipeline {
         maven "MAVEN3" // Name of Maven installation in Jenkins
     }
     environment {
-        DOCKERHUB_USERNAME = credentials('dockerhub-username') // Jenkins credentials ID
-        DOCKERHUB_PASSWORD = credentials('dockerhub-password') // Jenkins credentials ID
+        DOCKERHUB_USERNAME = credentials('dockerhub-username') // Jenkins your credentials ID
+        DOCKERHUB_PASSWORD = credentials('dockerhub-password') // Jenkins your credentials ID
     }
     stages {
         stage('Checkout Code') {

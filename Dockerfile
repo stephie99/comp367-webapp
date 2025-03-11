@@ -7,5 +7,5 @@ COPY target/comp367-webapp-0.0.1-SNAPSHOT.war /usr/local/tomcat/webapps/app.war
 # Expose the port your application runs on (Tomcat default is 8080)
 EXPOSE 8080
 
-# Default command to start Tomcat
+# Default command to start Tomcat.
 CMD ["catalina.sh", "run"]
