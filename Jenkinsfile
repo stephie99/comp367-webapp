@@ -15,22 +15,22 @@ pipeline {
         }
         stage('Build Maven Project') {
             steps {
-                sh 'mvn clean package'
+                bat 'mvn clean package'
             }
         }
         stage('Docker Login') {
             steps {
-                sh 'echo $DOCKERHUB_PASSWORD | docker login -u $DOCKERHUB_USERNAME --password-stdin'
+                bat 'echo $DOCKERHUB_PASSWORD | docker login -u $DOCKERHUB_USERNAME --password-stdin'
             }
         }
         stage('Docker Build') {
             steps {
-                sh 'docker build -t $DOCKERHUB_USERNAME/maven-webapp:latest .'
+                bat 'docker build -t $DOCKERHUB_USERNAME/maven-webapp:latest .'
             }
         }
         stage('Docker Push') {
             steps {
-                sh 'docker push $DOCKERHUB_USERNAME/maven-webapp:latest'
+                bat 'docker push $DOCKERHUB_USERNAME/maven-webapp:latest'
             }
         }
     }
