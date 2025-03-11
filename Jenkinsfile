@@ -1,17 +1,23 @@
 pipeline {
     agent any
     tools {
-        maven "apache-maven-3.9.9" // Use the correct Maven installation name
+        maven "apache-maven-3.9.9" // Ensure this matches the configured Maven installation name
     }
     environment {
-        DOCKERHUB_USERNAME = credentials('dockerhub-username')
-        DOCKERHUB_PASSWORD = credentials('dockerhub-password')
+        DOCKERHUB_USERNAME = credentials('dockerhub-username') // Make sure this credential ID is correct
+        DOCKERHUB_PASSWORD = credentials('dockerhub-password') // Make sure this credential ID is correct
     }
     stages {
         stage('Debug Credentials') {
             steps {
-                echo "DOCKERHUB_USERNAME: ${env.DOCKERHUB_USERNAME}"
-                echo "DOCKERHUB_PASSWORD: [hidden]" // Masking sensitive data
+                echo "DOCKERHUB_USERNAME: ${env.DOCKERHUB_USERNAME}" // Double-check this won't expose sensitive info
+                echo "DOCKERHUB_PASSWORD length: ${env.DOCKERHUB_PASSWORD?.length()}" // Ensures the password variable is set
+            }
+        }
+        stage('Test Docker Command') {
+            steps {
+                bat 'docker --version'
+                bat 'docker info' // Validates Docker setup on Jenkins agent.
             }
         }
         stage('Checkout Code') {
