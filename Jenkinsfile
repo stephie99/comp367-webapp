@@ -1,60 +1,48 @@
 pipeline {
     agent any
-    tools {
-        maven "apache-maven-3.9.9" // Ensure this matches the configured Maven installation name
-    }
+
     environment {
-        DOCKERHUB_USERNAME = credentials('dockerhub-username') // Ensure correct credential ID
-        DOCKERHUB_PASSWORD = credentials('dockerhub-password') // Ensure correct credential ID
+        IMAGE_NAME = "ssanto43/lab3-local-maven-webapp"
+        IMAGE_TAG = "1.0"
     }
+
     stages {
-        stage('Debug Credentials') {
-            steps {
-                script {
-                    echo "DOCKERHUB_USERNAME: ${DOCKERHUB_USERNAME}"
-                    echo "DOCKERHUB_PASSWORD length: ${DOCKERHUB_PASSWORD.length()}" // Ensure password is set
-                }
-            }
-        }
-        stage('Test Docker Command') {
-            steps {
-                bat 'docker --version'
-                bat 'docker info' // Validates Docker setup on Jenkins agent
-            }
-        }
-        stage('Checkout Code') {
+        stage('Checkout') { // (a) Check out stage [1 mark]
             steps {
                 checkout scm
             }
         }
-        stage('Build Maven Project') {
-            steps {
-                bat 'mvn clean package'
-            }
-        }
-        stage('Docker Login') {
+
+        stage('Build Maven Project') { // (b) Build maven project stage [1 mark]
             steps {
                 script {
-                    withCredentials([string(credentialsId: 'dockerhub-password', variable: 'DOCKERHUB_TOKEN')]) {
-                        bat "echo ${DOCKERHUB_TOKEN} | docker login -u ${DOCKERHUB_USERNAME} --password-stdin"
-                    }
+                    sh 'mvn clean package'
                 }
             }
         }
-        stage('Docker Build') {
+
+        stage('Docker Login') { // (d) Docker login stage [2 marks]
             steps {
-                bat "docker build -t ${DOCKERHUB_USERNAME}/maven-webapp:latest ."
+                withCredentials([usernamePassword(credentialsId: 'dockerhub-credentials', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASSWORD')]) {
+                    sh 'echo $DOCKER_PASSWORD | docker login -u $DOCKER_USER --password-stdin'
+                }
             }
         }
-        stage('Docker Push') {
+
+        stage('Docker Build') { // (e) Docker build stage [1 mark]
             steps {
-                bat "docker push ${DOCKERHUB_USERNAME}/maven-webapp:latest"
+                script {
+                    sh "docker build -t $IMAGE_NAME:$IMAGE_TAG ."
+                }
             }
         }
-    }
-    post {
-        always {
-            echo 'Pipeline execution completed.'
+
+        stage('Docker Push') { // (f) Docker push stage [1 mark]
+            steps {
+                script {
+                    sh "docker push $IMAGE_NAME:$IMAGE_TAG"
+                }
+            }
         }
     }
 }
