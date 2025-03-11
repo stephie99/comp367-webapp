@@ -1,7 +1,7 @@
 pipeline {
     agent any
     tools {
-        maven "MAVEN3" // The Maven version configured in Jenkins
+        maven "apache-maven-3.9.9" // Use the correct Maven installation name
     }
     environment {
         DOCKERHUB_USERNAME = credentials('dockerhub-username')
@@ -10,7 +10,7 @@ pipeline {
     stages {
         stage('Checkout Code') {
             steps {
-                git branch: 'main', url: 'https://github.com/stephie99/comp367-webapp.git'
+                checkout scm
             }
         }
         stage('Build Maven Project') {
@@ -36,7 +36,7 @@ pipeline {
     }
     post {
         always {
-            echo 'Pipeline execution completed!'
+            echo 'Pipeline execution completed.'
         }
     }
 }
