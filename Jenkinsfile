@@ -8,6 +8,12 @@ pipeline {
         DOCKERHUB_PASSWORD = credentials('dockerhub-password')
     }
     stages {
+        stage('Debug Credentials') {
+            steps {
+                echo "DOCKERHUB_USERNAME: ${env.DOCKERHUB_USERNAME}"
+                echo "DOCKERHUB_PASSWORD: [hidden]" // Masking sensitive data
+            }
+        }
         stage('Checkout Code') {
             steps {
                 checkout scm
@@ -20,17 +26,17 @@ pipeline {
         }
         stage('Docker Login') {
             steps {
-                bat 'echo $DOCKERHUB_PASSWORD | docker login -u $DOCKERHUB_USERNAME --password-stdin'
+                bat 'echo %DOCKERHUB_PASSWORD% | docker login -u %DOCKERHUB_USERNAME% --password-stdin'
             }
         }
         stage('Docker Build') {
             steps {
-                bat 'docker build -t $DOCKERHUB_USERNAME/maven-webapp:latest .'
+                bat 'docker build -t %DOCKERHUB_USERNAME%/maven-webapp:latest .'
             }
         }
         stage('Docker Push') {
             steps {
-                bat 'docker push $DOCKERHUB_USERNAME/maven-webapp:latest'
+                bat 'docker push %DOCKERHUB_USERNAME%/maven-webapp:latest'
             }
         }
     }
