@@ -1,9 +1,23 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
     <title>Welcome</title>
+    <script>
+        function displayGreeting() {
+            var now = new Date();
+            var hours = now.getHours();
+            var greeting;
+            if (hours < 12) {
+                greeting = "Good morning, Stephie! Welcome to COMP367.";
+            } else {
+                greeting = "Good afternoon, Stephie! Welcome to COMP367.";
+            }
+            document.getElementById("greeting").innerText = greeting;
+        }
+    </script>
 </head>
-<body>
-    <h1>Welcome to COMP367</h1>
+<body onload="displayGreeting()">
+    <h1 id="greeting"></h1>
 </body>
 </html>
