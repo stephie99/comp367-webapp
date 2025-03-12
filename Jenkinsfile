@@ -1,58 +1,67 @@
 pipeline {
     agent any
+
     tools {
-        maven "apache-maven-3.9.9" // Ensure this matches the configured Maven installation name
+        maven 'Maven 3.9.9' 
     }
+
     environment {
-        DOCKERHUB_CREDENTIALS = credentials('dockerhub-credentials') // Single credential ID
+        DOCKER_HUB_USER = 'ssanto43' 
+        IMAGE_NAME = 'ssantos123' 
     }
+
     stages {
-        stage('Debug Credentials') {
+        stage('Checkout') {
             steps {
-                script {
-                    echo "DOCKERHUB_CREDENTIALS length: ${DOCKERHUB_CREDENTIALS.length()}" // Ensure credentials are set
-                }
+                git branch: 'main', url: 'https://github.com/donaldazhuga/JenkinsLab2.git'
             }
         }
-        stage('Test Docker Command') {
-            steps {
-                bat 'docker --version'
-                bat 'docker info' // Validates Docker setup on Jenkins agent
-            }
-        }
-        stage('Checkout Code') {
-            steps {
-                checkout scm
-            }
-        }
+
         stage('Build Maven Project') {
             steps {
                 bat 'mvn clean package'
             }
         }
+
+        stage('Test') {
+            steps {
+                bat 'mvn test'
+            }
+        }
+
         stage('Docker Login') {
             steps {
-                script {
-                    withCredentials([string(credentialsId: 'dockerhub-credentials', variable: 'DOCKERHUB_TOKEN')]) {
-                        bat "echo ${DOCKERHUB_TOKEN} | docker login -u ${DOCKERHUB_TOKEN.split(':')[0]} --password-stdin"
-                    }
+                withCredentials([string(credentialsId: 'dockerhub-credentials', variable: 'DOCKER_HUB_PASSWORD')]) {
+                    bat "echo %DOCKER_HUB_PASSWORD% | docker login -u %DOCKER_HUB_USER% --password-stdin"
                 }
             }
         }
+
         stage('Docker Build') {
             steps {
-                bat "docker build -t ${DOCKERHUB_TOKEN.split(':')[0]}/maven-webapp:latest ."
+                bat "docker build -t %DOCKER_HUB_USER%/%IMAGE_NAME% ."
             }
         }
+
         stage('Docker Push') {
             steps {
-                bat "docker push ${DOCKERHUB_TOKEN.split(':')[0]}/maven-webapp:latest"
+                bat "docker push %DOCKER_HUB_USER%/%IMAGE_NAME%"
+            }
+        }
+
+        stage('Deploy') {
+            steps {
+                bat "docker run -d -p 9090:8080 %DOCKER_HUB_USER%/%IMAGE_NAME%"
             }
         }
     }
+
     post {
-        always {
-            echo 'Pipeline execution completed.'
+        success {
+            echo 'Pipeline executed successfully!'
+        }
+        failure {
+            echo 'Pipeline failed!'
         }
     }
-}
+} // Closing brace for the pipeline block
