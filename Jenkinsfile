@@ -4,13 +4,13 @@ pipeline {
         maven 'Maven 3.9.9'
     }
     environment {
-        DOCKER_HUB_USER = '3centennial1college3'
-    	IMAGE_NAME = 'jenkins-docker-maven-agile-lab3'
+        DOCKER_HUB_USER = 'ssanto43'
+    	IMAGE_NAME = 'jenkins-docker-lab3'
     }
     stages {
         stage('Checkout') {
             steps {
-                git branch: 'main', url: 'https://github.com/lmananquilcentennialcollege/Jenkins-Web-App-Lab2.git'
+                git branch: 'main', url: 'https://github.com/stephie99/comp367-webapp.git'   
             }
         }
         stage('Build Maven Project') {
