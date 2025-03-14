@@ -40,7 +40,7 @@ pipeline {
         }
         stage('Docker Build') {
             steps {
-                bat 'docker build -t %DOCKER_HUB_USER%/%IMAGE_NAME%:latest -f "Lab Assignments/Lab2/comp367-webapp/Dockerfile" "Lab Assignments/Lab2/comp367-webapp"'
+                bat 'docker build -t %DOCKER_HUB_USER%/%IMAGE_NAME%:latest -f DockerfIle .'
             }
         }
         // stage('Docker Build') {
