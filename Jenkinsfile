@@ -38,11 +38,16 @@ pipeline {
                 }
             }
         }
-        stage('Docker Build') {
-    		steps {
-        		bat 'docker build -t %DOCKER_HUB_USER%/%IMAGE_NAME%:latest -f Dockerfile .'
-    		}
-		}
+  //       stage('Docker Build') {
+  //   		steps {
+  //       		bat 'docker build -t %DOCKER_HUB_USER%/%IMAGE_NAME%:latest -f Dockerfile .'
+  //   		}
+		// }
+	stage('Docker Build') {
+            steps {
+                bat "docker build -t %DOCKER_HUB_USER%/%IMAGE_NAME%:."
+            }
+        }
         // stage('Docker Build') {
         //     steps {
         //         bat "docker build -t %DOCKER_HUB_USER%/%IMAGE_NAME%:latest ."
@@ -50,12 +55,12 @@ pipeline {
         // }
         stage('Docker Push') {
             steps {
-                bat "docker push %DOCKER_HUB_USER%/%IMAGE_NAME%:latest"
+                bat "docker push %DOCKER_HUB_USER%/%IMAGE_NAME%"
             }
         }
         stage('Deploy') {
             steps {
-                bat "docker run -d -p 8080:8080 %DOCKER_HUB_USER%/%IMAGE_NAME%:latest"
+                bat "docker run -d -p 8080:8080 %DOCKER_HUB_USER%/%IMAGE_NAME%"
             }
         }
     }
