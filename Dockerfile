@@ -21,7 +21,9 @@ FROM tomcat:10.1.16-jdk17-temurin
 WORKDIR /usr/local/tomcat/webapps/
 
 # Copy the WAR file built by Maven into Tomcat's webapps folder
-COPY --from=build /app/target/jenkins-maven-lab2-web-app-0.0.1-SNAPSHOT.war ROOT.war
+#COPY --from=build /app/target/jenkins-maven-lab2-web-app-0.0.1-SNAPSHOT.war ROOT.war
+COPY --from=build /app/target/comp367-webapp-0.0.1-SNAPSHOT.war ROOT.war
+
 
 # Expose port 8080
 EXPOSE 8080
