@@ -13,12 +13,12 @@ pipeline {
                 git branch: 'main', url: 'https://github.com/stephie99/comp367-webapp.git'
             }
         }
-        stage('Debug Workspace') {
-            steps {
-                // List all files and directories in the Jenkins workspace
-                bat 'dir /S /B'
-            }
-        }
+        // stage('Debug Workspace') {
+        //     steps {
+        //         // List all files and directories in the Jenkins workspace
+        //         bat 'dir /S /B'
+        //     }
+        // }
         stage('Build Maven Project') {
             steps {
                 bat 'mvn clean package'
