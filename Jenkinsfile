@@ -5,12 +5,12 @@ pipeline {
     }
     environment {
         DOCKER_HUB_USER = 'ssanto43'
-    	IMAGE_NAME = 'jenkins-docker-lab3'
+        IMAGE_NAME = 'jenkins-docker-lab3'
     }
     stages {
         stage('Checkout') {
             steps {
-                git branch: 'main', url: 'https://github.com/stephie99/comp367-webapp.git'   
+                git branch: 'main', url: 'https://github.com/stephie99/comp367-webapp.git'
             }
         }
         stage('Build Maven Project') {
@@ -23,15 +23,15 @@ pipeline {
                 bat 'mvn test'
             }
         }
-stage('Docker Login') {
-    steps {
-        withCredentials([usernamePassword(credentialsId: 'dockerhub-credentials', 
-            usernameVariable: 'DOCKER_HUB_USER', 
-            passwordVariable: 'DOCKER_HUB_PASSWORD')]) {
-            bat "docker login -u %DOCKER_HUB_USER% -p \"%DOCKER_HUB_PASSWORD%\""
+        stage('Docker Login') {
+            steps {
+                withCredentials([usernamePassword(credentialsId: 'dockerhub-credentials', 
+                    usernameVariable: 'DOCKER_HUB_USER', 
+                    passwordVariable: 'DOCKER_HUB_PASSWORD')]) {
+                    bat "docker login -u %DOCKER_HUB_USER% -p \"%DOCKER_HUB_PASSWORD%\""
+                }
+            }
         }
-    }
-}
         stage('Docker Build') {
             steps {
                 bat "docker build -t %DOCKER_HUB_USER%/%IMAGE_NAME%:latest ."
@@ -54,6 +54,6 @@ stage('Docker Login') {
         }
         failure {
             echo 'Pipeline failed!'
-        }
-    }
+        }
+    }
 }
