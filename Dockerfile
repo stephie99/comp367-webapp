@@ -29,4 +29,4 @@ COPY --from=build /app/target/comp367-webapp-0.0.1-SNAPSHOT.war ROOT.war
 EXPOSE 8080
 
 # Start Tomcat
-CMD ["catalina.sh", "run"]
+CMD ["catalina.sh", "run"]
