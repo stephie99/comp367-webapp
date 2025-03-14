@@ -39,10 +39,10 @@ pipeline {
             }
         }
         stage('Docker Build') {
-            steps {
-                bat 'docker build -t %DOCKER_HUB_USER%/%IMAGE_NAME%:latest -f DockerfIle .'
-            }
-        }
+    		steps {
+        		bat 'docker build -t %DOCKER_HUB_USER%/%IMAGE_NAME%:latest -f Dockerfile .'
+    		}
+		}
         // stage('Docker Build') {
         //     steps {
         //         bat "docker build -t %DOCKER_HUB_USER%/%IMAGE_NAME%:latest ."
