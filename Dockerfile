@@ -1,11 +1,30 @@
-# Use an official Tomcat image as the base for deploying a Java Web App
-FROM tomcat:10.1.36-jdk17-temurin
+# Use the official Maven image for building the project
+FROM maven:3.9.9-eclipse-temurin-17 as build
 
-# Copy the WAR file from the local machine to Tomcat's webapps directory
-COPY target/comp367-webapp-0.0.1-SNAPSHOT.war /usr/local/tomcat/webapps/app.war
+# Set the working directory inside the container
+WORKDIR /app
 
-# Expose the port your application runs on (Tomcat default is 8080)
+# Copy the pom.xml and download dependencies
+COPY pom.xml .
+RUN mvn dependency:go-offline
+
+# Copy the rest of the application source code
+COPY src ./src
+
+# Build the application
+RUN mvn clean package
+
+# Use a lightweight Tomcat image for deployment
+FROM tomcat:10.1.16-jdk17-temurin
+
+# Set the working directory inside the container
+WORKDIR /usr/local/tomcat/webapps/
+
+# Copy the WAR file built by Maven into Tomcat's webapps folder
+COPY --from=build /app/target/jenkins-maven-lab2-web-app-0.0.1-SNAPSHOT.war ROOT.war
+
+# Expose port 8080
 EXPOSE 8080
 
-# Default command to start Tomcat.
-CMD ["catalina.sh", "run"]
+# Start Tomcat
+CMD ["catalina.sh", "run"]
