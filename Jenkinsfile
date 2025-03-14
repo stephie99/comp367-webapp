@@ -1,7 +1,7 @@
 pipeline {
     agent any
     tools {
-        maven 'Maven 3.9.9'
+        maven 'apache-maven-3.9.9'
     }
     environment {
         DOCKER_HUB_USER = 'ssanto43'
