@@ -13,12 +13,12 @@ pipeline {
                 git branch: 'main', url: 'https://github.com/stephie99/comp367-webapp.git'
             }
         }
-        // stage('Debug Workspace') {
-        //     steps {
-        //         // List all files and directories in the Jenkins workspace
-        //         bat 'dir /S /B'
-        //     }
-        // }
+        stage('Debug Workspace') {
+            steps {
+                // List all files and directories in the Jenkins workspace
+                bat 'dir /S /B'
+            }
+        }
         stage('Build Maven Project') {
             steps {
                 bat 'mvn clean package'
@@ -39,10 +39,15 @@ pipeline {
             }
         }
         stage('Docker Build') {
-            steps {
-                bat "docker build -t %DOCKER_HUB_USER%/%IMAGE_NAME%:latest ."
-            }
-        }
+    		steps {
+        		bat 'docker build -t %DOCKER_HUB_USER%/%IMAGE_NAME%:latest -f Dockerfile .'
+    		}
+		}
+        // stage('Docker Build') {
+        //     steps {
+        //         bat "docker build -t %DOCKER_HUB_USER%/%IMAGE_NAME%:latest ."
+        //     }
+        // }
         stage('Docker Push') {
             steps {
                 bat "docker push %DOCKER_HUB_USER%/%IMAGE_NAME%:latest"
@@ -50,7 +55,7 @@ pipeline {
         }
         stage('Deploy') {
             steps {
-                bat "docker run -d -p 8082:8080 %DOCKER_HUB_USER%/%IMAGE_NAME%:latest"
+                bat "docker run -d -p 8080:8080 %DOCKER_HUB_USER%/%IMAGE_NAME%:latest"
             }
         }
     }
